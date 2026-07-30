@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Lotse template — copy into your project's .github/workflows/
+#
+# New issues enter the lifecycle at status:spec (unless they already carry a
+# status:* label, e.g. an epic opened without one). Keeps the pipeline honest:
+# every ticket has a defined state from the moment it exists.
+#
+# ADAPT: `runs-on` is ubuntu-latest; change it for self-hosted runners.
+# ─────────────────────────────────────────────────────────────────────────────
+name: ticket-defaults
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  default-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply status:spec if no status label present
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          HAS_STATUS=$(gh issue view "$ISSUE" --repo "$REPO" --json labels \
+            --jq '[.labels[].name | select(startswith("status:"))] | length')
+          if [ "${HAS_STATUS:-0}" -ge 1 ]; then
+            echo "#$ISSUE already has a status label — leaving it."; exit 0
+          fi
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label "status:spec"
+          echo "→ #$ISSUE: status:spec (default)"

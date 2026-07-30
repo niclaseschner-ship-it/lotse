@@ -1,0 +1,41 @@
+{
+  "_kommentar": [
+    "REFERENZ-FRAGMENT, kein Live-File. Zeigt, wie Lotses Guard-Hooks in die",
+    "Settings des Agenten-Harness verdrahtet werden. Die echte Settings-Datei",
+    "(~/.claude/settings.json) ist ein maschinen-lokaler Kompositions-Root, der",
+    "diese Hooks mit projekt-eigenen Hooks und lokalen Permissions mischt — sie",
+    "bleibt maschinen-lokal und wandert NICHT ins Repo.",
+    "Die Hook-Pfade zeigen auf den Deploy-Ziel-Ort ~/.claude/hooks/, wohin",
+    "deploy.sh die Quelle aus diesem Repo (hooks/) kopiert."
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Task|Agent",
+        "hooks": [
+          { "type": "command", "command": "python3 ~/.claude/hooks/dispatch_status_guard.py", "statusMessage": "Dispatch-Status-Guard" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "python3 ~/.claude/hooks/status_rollback_guard.py", "statusMessage": "Status-Rollback-Guard" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Task|Agent",
+        "hooks": [
+          { "type": "command", "command": "python3 ~/.claude/hooks/handoff_check.py", "statusMessage": "Handoff-Check" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "python3 ~/.claude/hooks/restart_pending_log.py", "statusMessage": "Restart-Pending-Log" }
+        ]
+      }
+    ]
+  }
+}
