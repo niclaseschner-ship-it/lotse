@@ -284,8 +284,9 @@ def _check_reif_structured(body: str, verdict_repo_sha: str,
             return (False, f"Requirement '{req_id}' nicht in '{spec_path}' auf "
                           f"{verdict_repo_sha[:8]} gefunden — Spec-PR mergen.")
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        # Best-effort wie check_drift: ohne git optimistisch.
-        return (True, "git unavailable, spec-binding optimistisch behalten")
+        # fail-closed (#1695): ohne git ist die Spec-Existenz nicht verifizierbar
+        # → denyen statt optimistisch durchlassen (lokaler Hook = CI-Strenge).
+        return (False, "git nicht verfuegbar — spec-binding nicht verifizierbar (fail-closed, #1695)")
 
     return (True, "ok")
 
@@ -316,7 +317,9 @@ def _check_chore_evidence(body: str, verdict_repo_sha: str) -> tuple[bool, str]:
             return (False, f"chore_evidence-Datei '{file_path}' existiert nicht auf "
                           f"verdict_repo_sha {verdict_repo_sha[:8]}.")
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        return (True, "git unavailable, chore_evidence optimistisch behalten")
+        # fail-closed (#1695): ohne git ist die chore_evidence-Datei nicht
+        # verifizierbar → denyen statt optimistisch durchlassen.
+        return (False, "git nicht verfuegbar — chore_evidence-Datei nicht verifizierbar (fail-closed, #1695)")
     return (True, "ok")
 
 
