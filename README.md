@@ -174,8 +174,8 @@ müssen am Laufzeit-Ort von Hand gelöscht werden.
 
 ## Referenz-Projekt: xbuddy
 
-Die Commands/Contracts hier sind in einem **echten Projekt** kampferprobt — *xbuddy*,
-einem Familien-Software-Ökosystem. Im Text begegnen dir konkrete Verweise auf dessen
+Die Commands/Contracts hier sind in einem **echten Projekt** kampferprobt —
+[**xbuddy**](https://github.com/niclaseschner-ship-it/xbuddy), einem Familien-Software-Ökosystem. Im Text begegnen dir konkrete Verweise auf dessen
 Ratifizierungs-Ledger (`RAT-N`), Prozess-Tickets (`PW-N`) und `specs/`/`conventions/`-
 Pfade. **Das sind Beispiel-Projekt-Artefakte, keine Framework-Pflicht** — sie zeigen
 die Methode an einem realen Codebase. Wer Lotse adaptiert, ersetzt Ledger, Specs und
