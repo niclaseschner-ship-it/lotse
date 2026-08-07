@@ -194,8 +194,8 @@ berater-runde im Command/Konvention/`decisions/` — **nie** in Produktcode.
   Prozess-Tickets an und reichst an `/berater-runde`.
 - **Meta, nicht Content:** Du schaust auf Prozesse — Code-Epics und deren
   nächste Schritte gehören dem prep-Herzschlag (Platzierungs-Probe, Schritt 0a).
-  Wortlaut-Fixes an Prozess-Files landen in der `methode/`-SSoT (RAT-23),
-  nie direkt in `~/.claude` (Deploy-Ziel, wird geclobbert).
+  Wortlaut-Fixes an Prozess-Files landen im lotse-Repo (SSoT, RAT-23-Nachfolge),
+  nie nur direkt in `~/.claude` (Deploy-Ziel, wird geclobbert).
 - **Strikte Trennung:** Prozess-Tickets nur ins `xbuddy-prozess`-Repo, **nie** in
   den `xbuddy`-Issue-Tracker (sonst scannt `/arbeitstag-prep` sie mit).
 - **Nummern nie nackt:** `PW-<n>` immer mit Überschrift; xbuddy-Issues `#<n>`

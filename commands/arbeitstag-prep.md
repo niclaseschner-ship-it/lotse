@@ -285,12 +285,13 @@ Browser ist nur die Anzeige, die durable Wahrheit bleibt das GitHub-Issue.
 
 ### Ablage + Aufruf
 
-- **Server-/Template-Code liegt unter `tools/prep-karten/`** — **NICHT** unter
-  `methode/`. `methode/` deployt (RAT-23) nur agents/commands/contracts/hooks an
-  den Runtime-Ort; ein `methode/tools/…` käme dort nie an. Der Command ruft den
-  Server über den **absoluten Pfad** (`${LOTSE_PROJECT_ROOT}/tools/prep-karten/…`).
-  (ENTSCHEID-File Paket-Sektion „Konvergiert" → Ablage `tools/prep-karten/`,
-  NICHT methode/; Command ruft absoluten Pfad)
+- **Server-/Template-Code liegt unter `tools/prep-karten/`** im Projekt-Repo —
+  **NICHT** im lotse-Repo. `deploy.sh` (lotse, SSoT) deployt nur
+  agents/commands/contracts/hooks an den Runtime-Ort; ein `tools/…` im
+  Framework-Repo käme dort nie an. Der Command ruft den Server über den
+  **absoluten Pfad** (`${LOTSE_PROJECT_ROOT}/tools/prep-karten/…`).
+  (ENTSCHEID-File Paket-Sektion „Konvergiert" → Ablage `tools/prep-karten/`;
+  Command ruft absoluten Pfad)
 - **Port `:8765`** — ephemeres Operator-Tool, **außerhalb** des
   Service-Bereichs 5000-5099 (`conventions/ports.md` PORT-1/2 bindet dort
   nicht). Der Server lebt nur für die Dauer des Nic-Blocks, danach wird er
