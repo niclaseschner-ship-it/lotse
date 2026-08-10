@@ -15,7 +15,9 @@ If you speak industry vocabulary: Lotse is **spec-driven development** (living
 specs, a project **constitution**, **ADR**-style ratification ledger) plus
 **harness engineering** (machine-checked contracts, adversarial cross-model
 review, a Definition-of-Ready human gate). The full house-term mapping lives in
-the **[glossary](docs/glossary.md)**.
+the **[glossary](docs/glossary.md)**. Three worked examples — real decisions from
+the reference project, retold with their ledger records linked — live in the
+**[decision stories](https://github.com/niclaseschner-ship-it/xbuddy/tree/main/docs/stories)**.
 
 > A *Lotse* (German for *maritime pilot*) guides a ship through narrow waters
 > without taking the helm. The mental model is systemic — inspired by *»The Third
