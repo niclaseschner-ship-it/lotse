@@ -1115,6 +1115,17 @@ CWD-relativ, Reader-Cache, Import-Stil). Reihenfolge:
      die „grün" verbarg (Foto-Pfad CWD-relativ, Reader-Cache), fängst du hier statt erst
      Nic. Recipe + Origin-Mapping: [[feedback-visual-selfverify-screenshot]],
      [[reference-xbuddy-pi-devtest]].
+   - **Render-Gate — Pflichtteil des visuellen Self-Checks, wenn das Projekt
+     eines hat** (xbuddy: `tools/render-gate/`, RAT-24, Bericht-Modus,
+     nicht-blockierend): für jede **berührte** Display-/Buddy-View
+     `cd ${LOTSE_PROJECT_ROOT}/tools/render-gate && node check.js <view>`
+     fahren (einmalig `npm ci`). Der Bericht ersetzt den Screenshot nicht —
+     er fängt die deterministischen Invarianten (Kollision, Overflow), die
+     das Auge übersieht. **Beobachtungs-Zeile Pflicht** in den PR- oder
+     Ticket-Kommentar: `render-gate: <view> → <sauber | Befund kurz | echte
+     Regression?/False Positive?>` — diese Zeilen sind der Zähler für die
+     RAT-24-Trigger (Flip-zu-Block, Rollout), den die Prozesswerkstatt
+     ausliest (xbuddy-prozess#77).
 
 2. **Vertikale-Scheibe-Test — durch Nic, am echten System.** Das ist die
    Probe, nicht ein Demo durch dich. Nic macht den prüfbaren Schritt vom
