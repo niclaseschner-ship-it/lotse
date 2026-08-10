@@ -11,6 +11,12 @@ guides AI coding agents through a disciplined pipeline — from idea to merged
 change — with adversarial review, a ratification ledger, and a retro learning
 loop. Tool-agnostic in spirit; the reference implementation runs on Claude Code.
 
+If you speak industry vocabulary: Lotse is **spec-driven development** (living
+specs, a project **constitution**, **ADR**-style ratification ledger) plus
+**harness engineering** (machine-checked contracts, adversarial cross-model
+review, a Definition-of-Ready human gate). The full house-term mapping lives in
+the **[glossary](docs/glossary.md)**.
+
 > A *Lotse* (German for *maritime pilot*) guides a ship through narrow waters
 > without taking the helm. The mental model is systemic — inspired by *»The Third
 > Swan«* (Bernd Schmid, isb Wiesloch): the same work happens at three altitudes at
