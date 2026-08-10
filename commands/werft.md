@@ -99,12 +99,19 @@ bündelst du auf **drei scharfe Gates** (A Spec · B Design · C Paket).
   Gemischte Sammler sind legal: **je Ticket-Cluster** klassifizieren, nicht je
   Sammler (Belegfall #578 — Plan-Aktivitäten: Bündel für #445/#471/#473 + paralleler
   Update-Lauf für PLAN-34/PAS).
+  **Stack-förmiger Anlass** (Keystone-Entscheid + ≥3 Folge-Tickets / Initiative)
+  → Epic + Kinder per `conventions/epics.md`, **kein** Werft-Sammler und kein
+  eigener Werft-Modus (xbuddy-prozess#72, 2026-08-07).
 - **Vertikale Scheibe** benennen: der eine Weg, den Nic am Abend klicken kann
   (z. B. „Kachel → Routine-View auf :8443 am Tablet").
 - **Existenz-Grep** (mit `--exclude-dir=__pycache__,.git`):
   `find specs -iname '<slug>*'`, `grep -n <slug> conventions/ports.md`,
   bestehende Spec/Port/Ticket? Inkl. **`blocked`-Label-Check** am Ticket
   (n=1-Reibung: Ticket trug noch `blocked`, obwohl der Lauf startete).
+  Zusätzlich **Verwandtschafts-Check über offene Tickets**:
+  `gh issue list -R ${LOTSE_PROJECT_REPO} --state open --search "<thema>"`
+  (Belegfall #1030: verwandter offener Track nur zufällig übers area-Label
+  gefunden).
 - **Asset-/Piktogramm-Abdeckungs-Check** gegen die Domäne — **früh**, nicht erst
   im Design (n=1: ARASAAC hatte keine Wetter-Szenen-Reihe, fiel zu spät auf).
   Bei ARASAAC: als **eigenes Artefakt `arasaac-probe/befund.md`** mit Tabelle

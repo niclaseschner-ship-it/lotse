@@ -98,6 +98,27 @@ off `PreToolUse`/`PostToolUse`. Merge that `hooks` block into your
 
 ---
 
+## Deploy regime — keeping repo and runtime in sync
+
+The repo is the single source of truth; the runtime location (`~/.claude/` or
+your `CLAUDE_CONFIG_DIR`) is a **deploy target, never an edit target**.
+
+- **After every merge to main** that touches `agents/ commands/ contracts/
+  hooks/`: run `./deploy.sh`. There is deliberately no cron — deploying is part
+  of landing the change.
+- **Never hand-edit files at the runtime location.** A hotfix belongs in the
+  repo first, then deploy. (Real incident: a hand-edited hook at the runtime
+  location drifted for a week and masked a silently dead log-collector.)
+- **Drift check:** `./deploy.sh --verify-only` compares the runtime location
+  against `origin/main` (sha256) and exits non-zero on drift. Run it when in
+  doubt, and before debugging any hook weirdness.
+- **Deletions are manual:** the deploy is additive. Before deleting a hook or
+  agent file at the runtime location, grep EVERY settings layer that might
+  register it (`~/.claude/settings*.json`, any secondary profile like
+  `~/.claude-<name>/settings.json`, project `.claude/`) — running sessions
+  cache their hook config, and deleting a still-registered hook file blocks
+  every file-tool call in every session (real incident, 2026-08-07).
+
 ## What Lotse assumes about your project (the honest list)
 
 - Work is tracked as **GitHub Issues**, changes as **PRs** that say `Closes #<n>`.
