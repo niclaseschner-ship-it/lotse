@@ -295,7 +295,9 @@ alte Klausel hatte ohnehin Sunset + `n=1`.)
   `${LOTSE_SCRATCH}/berater-runde/<ts>-ENTSCHEID-<slug>.md` mit Kopf-Feldern
   `Anlass:` · `Frage:` · `Status:` (`OFFEN` bis Nic entscheidet) · `Ticket:` ·
   Links auf Vorschlag + Antiberater-Report. Inhalt = das Schritt-4-Paket
-  (Landung), nicht das Rohmaterial.
+  (Landung), nicht das Rohmaterial. **Form der vier Glieder** (Problem →
+  betrachtete Alternativen → wie entschieden/gemessen → Ergebnis):
+  `contracts/entscheidung.md` — dort nachlesen, hier nicht duplizieren.
 - *Ticket-Verankerung:* Nach Nics Verdikt einen kurzen Entscheid-Kommentar auf
   jedes angeschaute/benannte xbuddy-Ticket (Entscheidung + „Wo es landet" + Link
   zum Entscheid-File). Verankern ≠ neuer Track.
