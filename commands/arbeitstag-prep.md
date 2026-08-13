@@ -316,7 +316,7 @@ Browser ist nur die Anzeige, die durable Wahrheit bleibt das GitHub-Issue.
   Metriken korrekt (kein `preflight_missing`-False-Positive). Verbindlich in
   `conventions/prep-lifecycle.md` PREP-10 „Mess-Naht im HTML-Modus".
 
-### Drei Pflicht-Härtungen (Klauseln)
+### Vier Pflicht-Härtungen (Klauseln)
 
 1. **Vor-Ausliefern-Check (Render-Probe vor Nic).** Bevor der gerenderte Stapel
    Nic gezeigt wird, läuft `node --check` auf das Server-/Template-JS **und** ein
@@ -337,7 +337,16 @@ Browser ist nur die Anzeige, die durable Wahrheit bleibt das GitHub-Issue.
    operatorseitige `autoMode`-Setzung ist Nics Umgebung, nicht Skill-Ledger.
    (ENTSCHEID-File Paket-Sektion „Konvergiert" → Closes/Creates: Chat-Freigabe;
    Pass-2 RAT-22-Patch)
-3. **Kein pkill-Selbstkill.** Zum Beenden des Servers **nie** ein `pkill`/
+3. **`answers/` zuerst lesen — vor allem anderen.** Der Server schreibt Nics
+   Verdikte still nach `${LOTSE_PROJECT_ROOT}/tools/prep-karten/answers/`
+   (`answers-latest.json` + Zeitstempel-Kopie); es gibt **keine**
+   Benachrichtigung. Also: nach jedem Karten-Loop **und zu Beginn jeder
+   Fortsetzung** als allererstes `ls -lt …/answers/` — bevor du neu koordinierst,
+   Karten baust oder Nic einen Stand meldest. Belegfall 2026-08-11: sechs
+   abgeschickte Verdikte lagen 38 Stunden ungelesen, in der Zeit gingen dieselben
+   sechs Fragen zweimal erneut an Nic und die Bilanz meldete „11 Entscheidungen
+   warten", als sechs davon längst beantwortet waren.
+4. **Kein pkill-Selbstkill.** Zum Beenden des Servers **nie** ein `pkill`/
    `kill`-Muster verwenden, das die **eigene** Bash-Zeile mit-matcht (Pattern
    trifft den eigenen Prozess → `exit 144`). Server über die gemerkte **PID**
    (aus dem Start) beenden, nicht über einen Namens-/Port-Pattern-Kill.
