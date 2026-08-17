@@ -43,26 +43,20 @@ gh issue list -R ${LOTSE_PROCESS_REPO} --label epic --state open --json number,t
 
 Zu **(a)**: pro offenem Ticket prüfen, ob es einen **fälligen Trigger oder Auftrag**
 an diesen Lauf trägt (Re-Visit-Datum erreicht · „wartet auf #X" und #X ist
-entschieden · eine Konsequenz-Zeile, die nachweislich nicht passiert ist). Belegt
-2026-08-17: der Sweep fand vier fällige Trigger in sechs Tickets, die die
-`--label epic`-Query per Konstruktion nie gesehen hätte — der Lauf am 13.08. fand
-statt und war blind. **Das Problem war die Query, nicht die Kadenz.**
+entschieden · eine Konsequenz-Zeile, die nicht passiert ist).
 
 **0b. Ledger-Query — Konsequenzen ohne Ticket (xbuddy-prozess#101).** Ein Ticket-
-Sweep sieht nur, was ein offenes Ticket hat. Entscheide, deren Anlass-Ticket bei der
+Sweep sieht nur, was ein offenes Ticket hat; Entscheide, deren Anlass-Ticket bei der
 Ratifizierung geschlossen wurde, fallen durch:
 ```bash
 git -C ${LOTSE_PROJECT_ROOT} log --diff-filter=A --since=<letzter Lauf> --name-only -- 'decisions/RAT-*.md'
 ```
-Jeden neuen Record gegen seine `Betrifft:`-Zeile prüfen: ist jede benannte Konsequenz
-ausgeführt oder ausdrücklich zurückgenommen? Das ist eine **Fundquelle, keine
-Garantie** — sie hängt an derselben Prosa-Disziplin, deren Versagen sie aufdeckt
-(Kill: reißt sie zweimal, wandert die Query nach `main-health.yml`).
-**Beweis-Standard auf jedem Fund** (RAT-36): eine Datei zu lesen belegt nicht, dass
-sie läuft — zu „X ist tot/erledigt" gehört die Aufrufkette, nicht der Fundort. Bei
-RAT-36 waren zwei von vier offenen Verdikt-Zeilen bei Nachmessung **sachlich falsch**;
-eine Häkchen-Buchführung hätte gelogen. Bekannte Grenze: 8 von 44 Records haben gar
-keine `Betrifft:`-Zeile.
+Jeden neuen Record gegen seine `Betrifft:`-Zeile prüfen: jede benannte Konsequenz
+ausgeführt oder ausdrücklich zurückgenommen? **Fundquelle, keine Garantie** — sie
+hängt an derselben Prosa-Disziplin, deren Versagen sie aufdeckt (Kill: reißt sie
+zweimal, wandert die Query nach `main-health.yml`). **Beweis-Standard** (RAT-36):
+zu „X ist erledigt/tot" gehört die Aufrufkette, nicht der Fundort — bei RAT-36 waren
+zwei von vier offenen Verdikt-Zeilen bei Nachmessung sachlich falsch.
 
 Zu **(b)**: pro offenem Epic legst du Nic eine **Herzschlag-Karte** vor, die genau ein Verdikt
 **treiben/halten/töten** erzwingt. Regeln, Karten-Form und Verdikt-Aktionen (treiben
