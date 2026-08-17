@@ -28,13 +28,43 @@ getrennt** von Code-Tickets im `xbuddy`-Repo).
 
 ## Ablauf
 
-**0. Epic-Herzschlag (Prozess-Epics).** Auftakt vor dem Retro-Scan: hol die offenen
-Prozess-Initiativen und treib sie weiter, damit klein geredete Initiativen nicht
-versacken.
+**0. Vollzugs-Sweep + Epic-Herzschlag.** Auftakt vor dem Retro-Scan, **zwei
+getrennte Quellen** — nie in eine `--label`-Query mischen: `gh issue list --label A
+--label B` ist **AND**, nicht OR (gemessen: `epic` → 7, `area:buddy` → 10, beide
+zusammen → **1**). Eine gemischte Query liefert still **0** und nimmt den
+Epic-Herzschlag mit.
+
 ```bash
+# (a) Vollzugs-Sweep — ALLE offenen Prozess-Tickets, nicht nur Epics
+gh issue list -R ${LOTSE_PROCESS_REPO} --state open --json number,title,body,labels
+# (b) Epic-Herzschlag — eigene Query, unverändert
 gh issue list -R ${LOTSE_PROCESS_REPO} --label epic --state open --json number,title,body
 ```
-Pro offenem Epic legst du Nic eine **Herzschlag-Karte** vor, die genau ein Verdikt
+
+Zu **(a)**: pro offenem Ticket prüfen, ob es einen **fälligen Trigger oder Auftrag**
+an diesen Lauf trägt (Re-Visit-Datum erreicht · „wartet auf #X" und #X ist
+entschieden · eine Konsequenz-Zeile, die nachweislich nicht passiert ist). Belegt
+2026-08-17: der Sweep fand vier fällige Trigger in sechs Tickets, die die
+`--label epic`-Query per Konstruktion nie gesehen hätte — der Lauf am 13.08. fand
+statt und war blind. **Das Problem war die Query, nicht die Kadenz.**
+
+**0b. Ledger-Query — Konsequenzen ohne Ticket (xbuddy-prozess#101).** Ein Ticket-
+Sweep sieht nur, was ein offenes Ticket hat. Entscheide, deren Anlass-Ticket bei der
+Ratifizierung geschlossen wurde, fallen durch:
+```bash
+git -C ${LOTSE_PROJECT_ROOT} log --diff-filter=A --since=<letzter Lauf> --name-only -- 'decisions/RAT-*.md'
+```
+Jeden neuen Record gegen seine `Betrifft:`-Zeile prüfen: ist jede benannte Konsequenz
+ausgeführt oder ausdrücklich zurückgenommen? Das ist eine **Fundquelle, keine
+Garantie** — sie hängt an derselben Prosa-Disziplin, deren Versagen sie aufdeckt
+(Kill: reißt sie zweimal, wandert die Query nach `main-health.yml`).
+**Beweis-Standard auf jedem Fund** (RAT-36): eine Datei zu lesen belegt nicht, dass
+sie läuft — zu „X ist tot/erledigt" gehört die Aufrufkette, nicht der Fundort. Bei
+RAT-36 waren zwei von vier offenen Verdikt-Zeilen bei Nachmessung **sachlich falsch**;
+eine Häkchen-Buchführung hätte gelogen. Bekannte Grenze: 8 von 44 Records haben gar
+keine `Betrifft:`-Zeile.
+
+Zu **(b)**: pro offenem Epic legst du Nic eine **Herzschlag-Karte** vor, die genau ein Verdikt
 **treiben/halten/töten** erzwingt. Regeln, Karten-Form und Verdikt-Aktionen (treiben
 → Kind-Ticket `Part of #<epic>`; halten nur mit datiertem Re-Visit-Trigger; töten →
 schließen) stehen **vollständig in `xbuddy/conventions/epics.md` → „Der Herzschlag"**
