@@ -108,6 +108,33 @@ def _resolve_project_repo() -> str | None:
 # None = nicht aufloesbar → Aufrufer muessen fail-closed denyen (siehe oben).
 XBUDDY_REPO_PATH = _resolve_project_repo()
 
+
+def ensure_project_repo(repo_slug: str | None = None) -> str | None:
+    """Loest den Projekt-Pfad notfalls aus dem uebergebenen Repo-Slug auf.
+
+    Der Slug (`owner/repo`) steht im geprueften gh-Kommando und ist damit die
+    zuverlaessigste Quelle — unabhaengig davon, ob der Hook-Prozess ENV-Variablen
+    geerbt hat. Genau das war am 2026-08-17 der Bruch: die Session lief in einem
+    Profil ohne env-Block, alle Hooks starteten ohne Projekt-Kontext, und ein
+    gueltiger Stempel wurde blockiert.
+
+    Setzt das Modul-Global und liefert den Pfad (oder None).
+    """
+    global XBUDDY_REPO_PATH
+    if XBUDDY_REPO_PATH is not None:
+        return XBUDDY_REPO_PATH
+    if repo_slug:
+        prev = os.environ.get("LOTSE_PROJECT_REPO")
+        os.environ["LOTSE_PROJECT_REPO"] = repo_slug
+        try:
+            XBUDDY_REPO_PATH = _resolve_project_repo()
+        finally:
+            if prev is None:
+                os.environ.pop("LOTSE_PROJECT_REPO", None)
+            else:
+                os.environ["LOTSE_PROJECT_REPO"] = prev
+    return XBUDDY_REPO_PATH
+
 # Pfade, bei deren Aenderung ein Verdikt als stale gilt.
 DRIFT_PATHS = ("specs/", "decisions/")
 
@@ -447,6 +474,11 @@ def _check_verdict_generic(
     """
     if not repo or not issue:
         return (False, f"Repo/Issue nicht erkannt — kann {marker_name} nicht pruefen")
+    # Der Repo-Slug steht im Kommando, das geprueft wird — damit ist der
+    # Projekt-Pfad ohne jede ENV aufloesbar (2026-08-17). Vorher haengte die
+    # Aufloesung an LOTSE_PROJECT_ROOT/-REPO; laufen Hooks in einem Profil ohne
+    # env-Block, war der Guard blind und blockte gueltige Stempel.
+    ensure_project_repo(repo)
     body, marker = fetch_verdict_comment(repo, issue, marker_re)
     if not body or not marker:
         return (False,
