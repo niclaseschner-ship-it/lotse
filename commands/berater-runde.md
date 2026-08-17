@@ -235,9 +235,9 @@ mode: read | propose | formalize
   Vorschläge (R1-Disziplin, PW-29). `propose` = Lösungs-Vorschlag (R2). `formalize`
   = Spec-/Convention-Entwurf (Schritt 5 nach Nic-Freigabe). `build` ist hier
   **verboten** (erfordert `parent_ticket`, gehört in `/arbeitstag`).
-- Der Hook `~/.claude/hooks/handoff_check.py` macht nur einen Presence-Check
-  (loggt `propose_without_beleg` bei kompletter Stille); die semantische Prüfung
-  (irrelevanter Beleg? markierte Ableitung als Entscheidungsgrund?) liegt bei
+- Es gibt **keine** maschinelle Beleg-Prüfung mehr (der Presence-Check-Hook ist
+  mit RAT-36:100 gestorben): die Prüfung — auch die triviale „ist überhaupt ein
+  Beleg da?" — liegt vollständig bei
   Berater + Antiberater.
 
 **Bestands-Grep-Pflicht** (CLAUDE.md §7). Jede „erster/einziger Konsument" /

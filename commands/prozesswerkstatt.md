@@ -63,13 +63,12 @@ Schmerz, der sich **wiederholt** (≥2 Retros) oder einzeln scharf-strukturell i
 
 **1b. Handoff-Misses-Quervergleich — ENTFÄLLT (2026-08-17).** Diese Quelle ist
 tot, nicht schwach: `~/.claude/logs/handoff_misses.jsonl` hat seinen letzten
-Eintrag am **2026-06-30**. Ursache ist nicht die PW-79-Relaxierung, wie der
+Eintrag am **2026-06-30**. Ursache war nicht die PW-79-Relaxierung, wie der
 frühere Hinweis vermutete, sondern eine Registrierungs-Lücke — der schreibende
-Hook `handoff_check.py` ist im **aktiven** Profil (`~/.claude-gmx/settings.json`,
-auf dem alle Sessions laufen) gar nicht registriert; **RAT-36:100** verdiktet ihn
-inzwischen als *weg*. Den Cluster trotzdem zu ziehen produziert ein Ranking aus
-48 Tage alten Daten, das erst nach dem Ausführen als wertlos erkennbar ist.
-Die kuratierte Ersatz-Quelle ist Schritt 1c.
+Hook lief im **aktiven** Profil (`~/.claude-gmx/settings.json`, auf dem alle
+Sessions laufen) gar nicht. **RAT-36:100** hat ihn verdiktet, der Vollzug ist am
+2026-08-17 erfolgt; Hook und Log existieren nicht mehr. Die kuratierte
+Ersatz-Quelle ist Schritt 1c.
 
 **1c. Nic-Eingriffs-Achsen-Scan (kuratierte Quellen, Nic-Mandat 2026-07-30).**
 Zusätzlich zu den Retros die **Feedback-Memories** des Harness (`feedback_*.md` im

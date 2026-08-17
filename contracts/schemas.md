@@ -127,7 +127,7 @@ checkpoint_fields:
           probe_url: "<Heim- oder Tailscale-URL auf den gebauten Screen>"
           probe_screenshot_path: "<Bauer-erzeugter Screenshot des gebauten Screens, repo-relativ>"
         rules:
-          - "handoff_check.py loggt mockup_visual_probe_missing, wenn werft_mockup_path im Prompt war und mockup_visual_probe im Output fehlt."
+          - "Fehlt mockup_visual_probe, obwohl werft_mockup_path im Prompt war, ist der Handoff unvollstaendig (Reject-Klasse mockup_visual_probe_missing, §3.1) — der Orchestrator prueft das, seit RAT-36:100 kein Hook mehr."
 
 modes:
   combined:
@@ -419,8 +419,8 @@ acceptance_criteria: [...]         # max 5, aus §1
 # Wenn entry_path_probe.required: true in §1: ein AC drückt den Probe-Pfad aus.
 
 # PW-54 V1 (2026-06-16 RATIFIZIERT): wenn §1 werft_mockup_path gesetzt hat,
-# MUSS der Subagent-Prompt es spiegeln — sonst sehen dispatch_status_guard.py
-# und handoff_check.py das Feld nicht (Hooks lesen nur den Prompt).
+# MUSS der Subagent-Prompt es spiegeln — sonst sieht dispatch_status_guard.py
+# das Feld nicht (Hooks lesen nur den Prompt).
 # Plus: Pfad MUSS in read_context_files erscheinen, damit der Subagent das
 # Mockup-File überhaupt konsumieren darf (sonst scope_breach).
 # werft_mockup_path: "specs/mockups/<slug>/index.html"   # aus §1 spiegeln
@@ -605,9 +605,10 @@ watchdog_hints:
 
 ### §3.1 Form-Drift-Reject-Klassen (PW-45 / xbuddy-prozess#45, 2026-06-12)
 
-Diese Klassen sind **Reject-Gründe** für den Orchestrator (und perspektivisch
-für `handoff_check.py`, xbuddy-prozess#52). Sie schärfen die Pflichtfelder
-oben — die SSoT für die Felder bleibt §3 selbst.
+Diese Klassen sind **Reject-Gründe** für den Orchestrator. Sie schärfen die
+Pflichtfelder oben — die SSoT für die Felder bleibt §3 selbst. Geprüft wird
+ausschließlich vom Orchestrator; der früher hier vorgesehene Hook ist mit
+**RAT-36:100** gestorben (xbuddy-prozess#52 damit erledigt).
 
 | Klasse | Trigger | Beispiel-Drift |
 |---|---|---|
@@ -619,10 +620,11 @@ oben — die SSoT für die Felder bleibt §3 selbst.
 | `related_echoes_skipped` | §2 `related_echo_anchors` nicht-leer UND (a) `related_echoes_checked` leer ODER Cardinalität ≠ Anker-Zahl, ODER (b) `related_echoes_reason` ist gesetzt obwohl §2-Anker vorhanden | Anker übergangen / `reason`-Marker zweckentfremdet |
 
 Trifft eine Klasse, wird der Handoff vom Orchestrator abgelehnt (Backfill-
-Pflicht oder Re-Dispatch). Pragma-Durchwinken ist nur erlaubt mit explizitem
-Eintrag in `~/.claude/logs/handoff_misses.jsonl` (`reason`-Feld füllen) — und
-nur, wenn der Befund inhaltlich klar ist und die Klasse nicht zur Re-Drift
-führt.
+Pflicht oder Re-Dispatch). **Pragma-Durchwinken gibt es nicht mehr** — Reject
+bleibt Reject (Nic-Setzung 2026-08-17, im Vollzug von RAT-36:100). Die frühere
+Ausnahme war an einen Log-Eintrag gebunden, dessen Hook gestorben ist; sie
+ersatzlos stehenzulassen hätte das Durchwinken bedingungslos erlaubt — eine
+Lockerung, die niemand beschlossen hat.
 
 ---
 

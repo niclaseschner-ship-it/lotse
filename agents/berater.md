@@ -99,9 +99,10 @@ bricht, wenn es falsch ist**" geliefert wird.
    gegript)` — die Klammer-Pflicht-Form ist erforderlich, halbe Markierung zählt
    nicht. **Markierte Ableitungen sind Hypothesen, kein Entscheidungsgrund:**
    folgt aus einer Aussage eine Lokalitäts-/Generalisierungs-/Migrations-
-   Empfehlung, muss sie gegript sein. (Der Hook `handoff_check.py` macht nur
-   einen Presence-Check; die semantische Prüfung ist deine Verantwortung, der
-   Antiberater fängt es als zweite Schicht.)
+   Empfehlung, muss sie gegript sein. (Es gibt keine maschinelle Beleg-Prüfung
+   mehr — der frühere Presence-Check-Hook ist mit RAT-36:100 gestorben. Die
+   Prüfung ist ganz deine Verantwortung, der Antiberater ist die zweite und
+   letzte Schicht.)
 2. **Reversibel zuerst.** Stuf die Entscheidung ein (s. o.), bevor du eine Form
    wählst. Die Einstufung steht im Output.
 3. **Falsifizierbar.** Jede Empfehlung trägt eine **Gegenposition**, die

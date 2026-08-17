@@ -562,7 +562,7 @@ ENTSCHEID-File `20260616-1715-RATIFIZIERT-pw54-werft-mockup-anker.md`):**
 Wenn der Ticket Contract (§1) ein `werft_mockup_path: specs/mockups/<slug>/...`
 trägt (Werft-UI-Bau-Übergaben), MUSS der Sub-Agent Contract (§2) das Feld
 spiegeln **und** den Pfad in `scope.read_context_files` aufnehmen — sonst
-sehen `dispatch_status_guard.py`/`handoff_check.py` das Feld nicht (Hooks
+sieht `dispatch_status_guard.py` das Feld nicht (Hooks
 parsen nur den Prompt) und der Subagent darf das Mockup nicht lesen (Stop-
 Rule `scope_breach`). Der gebaute Screen liefert im `validation_handoff`
 einen `mockup_visual_probe`-Block mit `probe_url` und `probe_screenshot_path`
@@ -1184,28 +1184,10 @@ CWD-relativ, Reader-Cache, Import-Stil). Reihenfolge:
      sie zu schwergewichtig? Gab es weiterhin Blindflug?
    - **Handoff / Watchdog.** Waren Handoffs vollständig? Hat die
      Watchdog-Ready Summary Tokens gespart? Gab es Re-Dispatches?
-     **Handoff-Lücken (PW-32, 2026-06-09):** Lies die jsonl-Einträge der
-     laufenden Session aus `~/.claude/logs/handoff_misses.jsonl` (Filter:
-     `ts >= session_start`). Trage als eigene Sektion „Handoff-Lücken" in der
-     Retro ein: pro Eintrag `class` + `parent_ticket` + `mode` + 1-Satz-Lese
-     des Excerpts. Klassen heute:
-     - `handoff_missing` (mode: build ohne `contract_kind: handoff`-Block) →
-       Strukturierter-Output-Disziplin gebrochen, Subagent muss nachschärfen.
-     - `handoff_in_read_mode` (mode: read MIT `contract_kind: handoff`) →
-       PW-29-R1-Klasse: Lese-Auftrag hat Lösungs-/Handoff-Form geliefert
-       (Disziplin nicht gehalten). Schmerz: bessere R1-Auftrags-Form für die
-       nächste Runde.
-     - `fence_missing` (mode: build mit `contract_kind: handoff`, aber NICHT
-       als letzter yaml-Fence) → PW-52/PW-58-Fall-3a (2026-06-17 RATIFIZIERT;
-       ENTSCHEID-File `20260617-2330-RATIFIZIERT-pw58-pw52-disziplin-
-       mechanik-katalog.md` Sektion „R2-Empfehlung → Fall 3"): Handoff-Inhalt
-       muss als letzter inhaltlicher Block in einem ```yaml-Fence stehen
-       (`schemas.md:160-164`). Schmerz: Subagent muss Output-Form schärfen.
-     - `propose_without_beleg` (mode: propose ohne Datei:Zeile-Backtick oder
-       markierte Ableitung) → PW-10 V2: R1-Belege-Disziplin nicht gehalten.
-     - `mockup_visual_probe_missing` (mode: build mit `werft_mockup_path`,
-       aber ohne `mockup_visual_probe.probe_url` + `probe_screenshot_path`)
-       → PW-54 V1: UI-Build-Self-Check fehlt.
+     *(Die maschinelle Handoff-Lücken-Sektion aus `handoff_misses.jsonl`
+     entfällt — der Hook ist mit RAT-36:100 gestorben. Die Form-Drift-Klassen
+     leben als Reject-Gründe für den Orchestrator in `schemas.md` §3.1 weiter;
+     hier zählt nur, ob sie im Lauf aufgetreten sind.)*
    - **Restart-Pending (PW-58 Fall 1 Schritt 2, 2026-06-17 RATIFIZIERT):**
      Lies `~/.claude/logs/restart_pending.jsonl` (Filter: `ts >= session_start`,
      `restart_done: false`). Pro Eintrag: hat Nic den Service neu gestartet?

@@ -13,27 +13,33 @@
       {
         "matcher": "Task|Agent",
         "hooks": [
-          { "type": "command", "command": "python3 ~/.claude/hooks/dispatch_status_guard.py", "statusMessage": "Dispatch-Status-Guard" }
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/dispatch_status_guard.py",
+            "statusMessage": "Dispatch-Status-Guard"
+          }
         ]
       },
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "python3 ~/.claude/hooks/status_rollback_guard.py", "statusMessage": "Status-Rollback-Guard" }
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/status_rollback_guard.py",
+            "statusMessage": "Status-Rollback-Guard"
+          }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Task|Agent",
-        "hooks": [
-          { "type": "command", "command": "python3 ~/.claude/hooks/handoff_check.py", "statusMessage": "Handoff-Check" }
-        ]
-      },
-      {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "python3 ~/.claude/hooks/restart_pending_log.py", "statusMessage": "Restart-Pending-Log" }
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/restart_pending_log.py",
+            "statusMessage": "Restart-Pending-Log"
+          }
         ]
       }
     ]
