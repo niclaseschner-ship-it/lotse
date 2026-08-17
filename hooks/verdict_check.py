@@ -44,8 +44,69 @@ WERFT_VERDICT_MARKER_RE = re.compile(
     re.MULTILINE,
 )
 
-# Git-Repo-Pfad fuer Drift- und Spec-Binding-Checks (best-effort, kein Fail bei Fehlen).
-XBUDDY_REPO_PATH = os.environ.get("LOTSE_PROJECT_ROOT") or os.environ.get("XBUDDY_REPO") or os.getcwd()
+def _resolve_project_repo() -> str | None:
+    """Ermittelt den Pfad des Projekt-Repos fuer Drift- und Spec-Binding-Checks.
+
+    WARUM NICHT os.getcwd() als Fallback (2026-08-17): der Hook laeuft im
+    Arbeitsverzeichnis der Session, nicht des Projekts. Laeuft eine Session aus
+    einem anderen Repo (z. B. kommandobruecke) und sind die ENV-Variablen im
+    Hook-Prozess nicht gesetzt, prueft der Guard still das FALSCHE Repo:
+    `merge-base --is-ancestor <xbuddy-sha> origin/main` scheitert dort mit
+    "Not a valid commit name" und der Guard meldet "Verdict stale" — obwohl der
+    SHA in Wahrheit die Spitze von origin/main ist.
+
+    Das ist in beide Richtungen unzuverlaessig: genauso koennte ein Verdikt
+    faelschlich durchgewunken werden, wenn im fremden Repo zufaellig ein
+    passender Commit liegt. Ein Guard, der still am falschen Ort misst, ist
+    schlimmer als keiner.
+
+    Aufloesungs-Reihenfolge:
+      1. LOTSE_PROJECT_ROOT / XBUDDY_REPO (explizit gesetzt, hat Vorrang)
+      2. Ableitung aus LOTSE_PROJECT_REPO ueber das origin-Remote: unter
+         ~/repos wird das Verzeichnis gesucht, dessen origin auf den
+         Projekt-Slug zeigt. Robust gegen abweichende Verzeichnisnamen.
+      3. cwd — aber NUR, wenn dessen origin zum Projekt-Slug passt.
+      4. None → der Aufrufer faellt fail-closed, statt am falschen Ort zu messen.
+    """
+    for var in ("LOTSE_PROJECT_ROOT", "XBUDDY_REPO"):
+        val = os.environ.get(var)
+        if val and os.path.isdir(os.path.join(val, ".git")):
+            return val
+
+    slug = (os.environ.get("LOTSE_PROJECT_REPO") or "").strip()
+
+    def _origin_matches(path: str) -> bool:
+        if not slug or not os.path.isdir(os.path.join(path, ".git")):
+            return False
+        try:
+            res = subprocess.run(
+                ["git", "-C", path, "remote", "get-url", "origin"],
+                capture_output=True, text=True, timeout=5, check=False,
+            )
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return False
+        return res.returncode == 0 and slug in res.stdout
+
+    cwd = os.getcwd()
+    if _origin_matches(cwd):
+        return cwd
+
+    if slug:
+        repos_root = os.path.join(os.path.expanduser("~"), "repos")
+        try:
+            for name in sorted(os.listdir(repos_root)):
+                cand = os.path.join(repos_root, name)
+                if _origin_matches(cand):
+                    return cand
+        except OSError:
+            pass
+
+    return None
+
+
+# Git-Repo-Pfad fuer Drift- und Spec-Binding-Checks.
+# None = nicht aufloesbar → Aufrufer muessen fail-closed denyen (siehe oben).
+XBUDDY_REPO_PATH = _resolve_project_repo()
 
 # Pfade, bei deren Aenderung ein Verdikt als stale gilt.
 DRIFT_PATHS = ("specs/", "decisions/")
@@ -185,6 +246,10 @@ def check_spec_binding(body: str, verdict_repo_sha: str) -> tuple[bool, str]:
 
     Liefert (ok, reason). ok=True = darf gestempelt werden.
     """
+    if XBUDDY_REPO_PATH is None:
+        # fail-closed (2026-08-17), siehe _resolve_project_repo.
+        return (False, "Projekt-Repo nicht aufloesbar (LOTSE_PROJECT_ROOT/LOTSE_PROJECT_REPO "
+                       "im Hook-Prozess nicht gesetzt) — Spec-Binding nicht verifizierbar")
     reif = _extract_axis_value(body, "reif")
     if reif is None:
         return (False, "axes.reif fehlt im Verdikt")
@@ -295,6 +360,11 @@ def _check_chore_evidence(body: str, verdict_repo_sha: str) -> tuple[bool, str]:
     """PW-26 Pfad 2: reines Chore ohne Spec-Anker. chore_evidence Pflicht +
     erste Komponente (Datei:Zeile) muss auf verdict_repo_sha existieren.
     """
+    if XBUDDY_REPO_PATH is None:
+        # fail-closed (2026-08-17): Projekt-Repo nicht aufloesbar. Am falschen
+        # Ort zu messen ist schlimmer als zu blocken — siehe _resolve_project_repo.
+        return (False, "Projekt-Repo nicht aufloesbar (LOTSE_PROJECT_ROOT/LOTSE_PROJECT_REPO "
+                       "im Hook-Prozess nicht gesetzt) — chore_evidence nicht verifizierbar")
     chore_ev = _extract_axis_value(body, "chore_evidence")
     if not chore_ev:
         return (False, "chore_evidence leer bei keine-spec-noetig ohne reif_spec_path.")
@@ -329,6 +399,13 @@ def check_drift(verdict_repo_sha: str) -> tuple[bool, str]:
 
     Liefert (is_drifted, reason). is_drifted=False = OK, Verdict noch gueltig.
     """
+    if XBUDDY_REPO_PATH is None:
+        # fail-closed (2026-08-17): ohne aufgeloestes Projekt-Repo wuerde der
+        # ancestor-Check im FALSCHEN Repo laufen und "stale" melden, obwohl der
+        # SHA die Spitze von origin/main ist. Genau dieser Fall trat auf, als
+        # eine Session aus einem anderen Repo lief.
+        return (True, "Projekt-Repo nicht aufloesbar (LOTSE_PROJECT_ROOT/LOTSE_PROJECT_REPO "
+                      "im Hook-Prozess nicht gesetzt) — Drift-Probe nicht durchfuehrbar")
     try:
         # fetch quiet (best-effort, kein Fail bei Netz-Problem — Verdict bleibt gueltig)
         subprocess.run(
