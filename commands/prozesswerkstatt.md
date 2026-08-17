@@ -61,34 +61,15 @@ haben.
 **1. Scannen.** `ls ~/.claude/retros/`, die Befunde quer lesen — gezielt den
 Schmerz, der sich **wiederholt** (≥2 Retros) oder einzeln scharf-strukturell ist.
 
-**1b. Handoff-Misses-Quervergleich (mechanisch).** Zusätzlich zu den Retros
-`~/.claude/logs/handoff_misses.jsonl` laden, nach `class` clustern. Diese
-JSONL sammelt Handoff-Brüche aus dem Stop-Hook session-übergreifend und ist
-oft schärfere Datenbasis als die Retro-Stichproben (Retros erzeugen Befunde
-qua Form-Pflicht, JSONL-Brüche sind objektiv geloggt).
-
-```bash
-python3 -c "
-import json
-from collections import Counter
-data = [json.loads(l) for l in open('~/.claude/logs/handoff_misses.jsonl')]
-by_class = Counter(d['class'] for d in data)
-for cls, n in by_class.most_common():
-    if n >= 3:
-        print(f'{cls}: {n}')
-"
-```
-
-Klassen mit **n≥3** sind PW-Kandidaten und gehen durch dieselben Guards wie
-Retro-Befunde (Schritt 2). Der Cluster-Beleg liegt fertig im JSONL, aber die
-echte Lücke muss noch gegen die Skill-/Hook-Datei verifiziert werden
-(Quelle-vor-Häufigkeit). Kein Zeitfenster-Filter (Nic-Mandat 2026-06-14:
-„nach Anzahl, gut genug zum Testen").
-
-**Recency-Hinweis (2026-07-30):** `handoff_misses.jsonl` ist seit dem
-PW-79-Handoff-Entzeremonialisieren (2026-06-30) quasi statisch — der Log verstummte
-genau mit der Relaxierung, nicht durch einen Bug. Er bleibt gültig, ist aber keine
-*frische* Quelle mehr; die schärfere kuratierte Quelle ist inzwischen Schritt 1c.
+**1b. Handoff-Misses-Quervergleich — ENTFÄLLT (2026-08-17).** Diese Quelle ist
+tot, nicht schwach: `~/.claude/logs/handoff_misses.jsonl` hat seinen letzten
+Eintrag am **2026-06-30**. Ursache ist nicht die PW-79-Relaxierung, wie der
+frühere Hinweis vermutete, sondern eine Registrierungs-Lücke — der schreibende
+Hook `handoff_check.py` ist im **aktiven** Profil (`~/.claude-gmx/settings.json`,
+auf dem alle Sessions laufen) gar nicht registriert; **RAT-36:100** verdiktet ihn
+inzwischen als *weg*. Den Cluster trotzdem zu ziehen produziert ein Ranking aus
+48 Tage alten Daten, das erst nach dem Ausführen als wertlos erkennbar ist.
+Die kuratierte Ersatz-Quelle ist Schritt 1c.
 
 **1c. Nic-Eingriffs-Achsen-Scan (kuratierte Quellen, Nic-Mandat 2026-07-30).**
 Zusätzlich zu den Retros die **Feedback-Memories** des Harness (`feedback_*.md` im
