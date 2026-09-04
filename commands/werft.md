@@ -259,9 +259,16 @@ NACH Design geschrieben, Reconcile wird trivial bis überflüssig.
     lokalen Patch, PNG-Galerie über Heim-IP. Funktion muss nicht laufen.
   - **Live-Render mit Pfad-Rewrite per Präfix-Routing** **nur**, wenn der
     gepatchte View **keine** Schreib-Calls enthält. Vor dem Anbieten an Nic
-    prüfen: `grep -E '"(PUT|DELETE|POST)"' <template>`. Trifft das Pattern, ist
-    Live-Render **verboten** — Tablet-Klicks würden reale Familien-Daten ändern
-    (AB2-Befund am Plan-Template `plan/templates/plan_kinder.html:700-785`).
+    prüfen: `grep -Ein "(PUT|DELETE|POST|PATCH)" <template>` — **quote-agnostisch**.
+    Die frühere Fassung verlangte Doppel-Quotes (`'"(PUT|DELETE|POST)"'`) und
+    meldete deshalb **„sauber" an einem Template mit drei Schreib-Calls**, weil
+    es `method: 'PUT'` schreibt (Werft-Retro 2026-08-17, #1875). Trifft das
+    Pattern, ist Live-Render **verboten** — Tablet-Klicks würden reale
+    Familien-Daten ändern (AB2-Befund am Plan-Template
+    `plan/templates/plan_kinder.html:700-785`). **Treffer-frei ist kein Freibrief:**
+    bei null Treffern einmal `fetch(`/`XMLHttpRequest` im Template gegenlesen,
+    bevor du Live-Render anbietest — eine fail-open brechende Stop-Rule ist
+    schlimmer als keine, sie erzeugt Sicherheit, die nicht da ist.
     Picker oder Screenshot statt dessen. **Mechanik:** origin-absolute Pfade
     (`/api/...`, `/display/_shared/...`) per **String-Rewrite** im Snapshot auf
     den passenden Heim-IP-Port pro Präfix umschreiben (`/display/_shared/` → Hub
