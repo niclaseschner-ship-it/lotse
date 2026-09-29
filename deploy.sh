@@ -60,6 +60,28 @@ trap 'rm -rf "$TMP"' EXIT
 git -C "$REPO" archive "$SOURCE_REF" "${SORTEN[@]}" | tar -x -C "$TMP"
 SRC="$TMP"
 
+# Zeilendeckel (xbuddy-prozess#104): commands/.zeilenbudget = "<name> <max-zeilen>" je Zeile.
+# Ueberschreitung bricht ab; den Deckel anheben geht nur sichtbar im selben Commit.
+BUDGET="$SRC/commands/.zeilenbudget"
+if [ -f "$BUDGET" ]; then
+  over=0
+  while read -r name max; do
+    [ -n "$name" ] || continue
+    datei="$SRC/commands/$name.md"
+    [ -f "$datei" ] || continue
+    ist=$(wc -l < "$datei")
+    if [ "$ist" -gt "$max" ]; then
+      echo "FEHLER: commands/$name.md hat $ist Zeilen, Deckel $max (commands/.zeilenbudget)." >&2
+      over=1
+    fi
+  done < "$BUDGET"
+  if [ "$over" -eq 1 ]; then
+    echo "Kuerzen — oder den Deckel im selben Commit sichtbar anheben." >&2
+    exit 1
+  fi
+  echo "Zeilendeckel ok ($(cat "$SRC"/commands/*.md | wc -c) Zeichen in commands/*.md)."
+fi
+
 sha() { sha256sum "$1" | cut -d' ' -f1; }
 
 drift=0
