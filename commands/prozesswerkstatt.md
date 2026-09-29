@@ -85,14 +85,7 @@ haben.
 **1. Scannen.** `ls ~/.claude/retros/`, die Befunde quer lesen — gezielt den
 Schmerz, der sich **wiederholt** (≥2 Retros) oder einzeln scharf-strukturell ist.
 
-**1b. Handoff-Misses-Quervergleich — ENTFÄLLT (2026-08-17).** Diese Quelle ist
-tot, nicht schwach: `~/.claude/logs/handoff_misses.jsonl` hat seinen letzten
-Eintrag am **2026-06-30**. Ursache war nicht die PW-79-Relaxierung, wie der
-frühere Hinweis vermutete, sondern eine Registrierungs-Lücke — der schreibende
-Hook lief im **aktiven** Profil (`~/.claude-gmx/settings.json`, auf dem alle
-Sessions laufen) gar nicht. **RAT-36:100** hat ihn verdiktet, der Vollzug ist am
-2026-08-17 erfolgt; Hook und Log existieren nicht mehr. Die kuratierte
-Ersatz-Quelle ist Schritt 1c.
+**1b** entfällt: Quelle tot seit 2026-06-30, verdiktet in RAT-36:100. Ersatz ist 1c.
 
 **1c. Nic-Eingriffs-Achsen-Scan (kuratierte Quellen, Nic-Mandat 2026-07-30).**
 Zusätzlich zu den Retros die **Feedback-Memories** des Harness (`feedback_*.md` im
@@ -161,6 +154,13 @@ Wert liegt in der Achsen-Bündelung, nicht im Zähler.
 
 **3. Re-Litigations-Check.** `ls ${LOTSE_SCRATCH}/berater-runde/*RATIFIZIERT*`
 + `decisions/INDEX.md` (xbuddy-Repo). Schon entschieden = kein offenes Problem.
+
+**3a. Fang-Probe (xbuddy-prozess#104).** Höchstens ein Streichkandidat pro Lauf: Schritt/Regel, die laut
+Stop-Zeilen Zeit kostet, ohne zu fangen. Erst RAT-36 **F0**: trägt eine ratifizierte Norm ihn, ist das ein
+Nic-Gate — Supersede zuerst, Löschung als eigener Schritt. Beweis = Aufrufkette: „kein Code-Vertrag" erst nach
+Repo-Grep auf konkrete Tokens/Pfade mit benanntem Konsumenten (`hooks/dispatch_status_guard.py` parst
+`contract_kind`/`mode`), nie per Vermerk/Abschnittsname. Datenlage dünn = nichts tun. Ticket: Regel · Reibung ·
+Fang · verhindertes Ereignis; ein Streichen pro PR, `.zeilenbudget` mitsenken, Revert bei Wiederkehr.
 
 **4. Nach Linse sortieren + ticketen.** Überlebende Kandidaten → je ein
 Prozess-Ticket im Repo `xbuddy-prozess`, **dedupt gegen offene Tickets** (kein
