@@ -21,7 +21,8 @@ Eine Flughöhe über dem Tun: **was ist hier passiert, was geht besser** — auf
 *Arbeitsweise & Reibung*, **kein** Activity-Log („8 PRs gemergt" gehört nicht rein).
 
 - **Start** — was sollten wir anfangen (neue Praxis, fehlendes Werkzeug, Lücke).
-- **Stop** — was kostet/reibt und sollte weg (Anti-Pattern, Umweg, Fehlannahme).
+- **Stop** — welcher Schritt oder welche Regel hat heute Zeit gekostet, ohne etwas zu
+  fangen? (Leer ist erlaubt.) Lehren aus Fehlern und Umwegen gehören nach Start.
 - **Continue** — was lief gut und soll bleiben.
 - **Flughöhe** — 1–3 Sätze: das Muster *hinter* den Punkten; was hat die Session
   über unsere Arbeitsweise gelehrt, das die nächste besser macht.
