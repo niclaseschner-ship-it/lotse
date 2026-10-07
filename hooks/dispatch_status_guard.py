@@ -60,6 +60,22 @@ MOCKUP_REQUIRED_SUFFIX = ".html"
 # (Skill-Dateien und Vorschlags-Files zitieren den Marker haeufig).
 SKIP_MARKER = "<!-- dispatch_status_guard:skip -->"
 
+
+def ausserhalb_des_projekts(cwd: str) -> bool:
+    """Der Vertrag gilt fuer das Lotse-Projekt (LOTSE_PROJECT_ROOT samt Familie) und lotse selbst.
+    Sitzungen in anderen Repos (z. B. live-meeting-coach) dispatchen ohne Vertrag (Niclas, 07.10.2026).
+    Ohne erkennbares Git-Repo greift der Guard weiter – im Zweifel lieber blockieren."""
+    try:
+        top = subprocess.run(["git", "-C", cwd or ".", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                             capture_output=True, text=True, timeout=5, check=True).stdout.strip()
+    except Exception:
+        return False
+    if not top:
+        return False
+    repo = os.path.basename(os.path.dirname(os.path.realpath(top)))
+    familie = os.path.basename(os.path.realpath(XBUDDY_REPO_ROOT))
+    return not (repo.startswith(familie) or repo == "lotse")
+
 # PW-31 (xbuddy-prozess#30, 2026-06-09): Sub-Agent Contract Pflicht.
 # Jeder Subagent-Prompt muss einen YAML-Schicht-2-Block tragen mit:
 # - contract_kind: subagent  (Standard, mit parent_ticket)
@@ -96,6 +112,9 @@ def main() -> None:
     tool_input = data.get("tool_input") or {}
     prompt = tool_input.get("prompt", "")
     if not isinstance(prompt, str):
+        sys.exit(0)
+
+    if ausserhalb_des_projekts(data.get("cwd") or os.getcwd()):
         sys.exit(0)
 
     # PW-31: Mode-Feld ist Pflicht in JEDEM Subagent-Prompt (auch im Skip-Pfad).
