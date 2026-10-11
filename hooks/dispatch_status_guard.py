@@ -64,17 +64,21 @@ SKIP_MARKER = "<!-- dispatch_status_guard:skip -->"
 def ausserhalb_des_projekts(cwd: str) -> bool:
     """Der Vertrag gilt fuer das Lotse-Projekt (LOTSE_PROJECT_ROOT samt Familie) und lotse selbst.
     Sitzungen in anderen Repos (z. B. live-meeting-coach) dispatchen ohne Vertrag (Niclas, 07.10.2026).
-    Ohne erkennbares Git-Repo greift der Guard weiter – im Zweifel lieber blockieren."""
+    Ohne Git-Repo entscheidet der Pfad: Der Guard greift nur, wenn ein Pfadteil zu lotse oder zur
+    Familie gehoert. Vorher blockierte er dort pauschal und traf etwa Paperless-Sitzungen in
+    ~/repos (Niclas, 11.10.2026: „gilt nur für lotse und xbuddy“)."""
+    projekt = os.environ.get("LOTSE_PROJECT_ROOT") or os.environ.get("XBUDDY_REPO")
+    familie = os.path.basename(os.path.realpath(projekt)) if projekt else "xbuddy"
+    gehoert_dazu = lambda name: name.startswith(familie) or name == "lotse"
     try:
         top = subprocess.run(["git", "-C", cwd or ".", "rev-parse", "--path-format=absolute", "--git-common-dir"],
                              capture_output=True, text=True, timeout=5, check=True).stdout.strip()
     except Exception:
-        return False
+        top = ""
     if not top:
-        return False
+        return not any(gehoert_dazu(t) for t in os.path.realpath(cwd or ".").split(os.sep) if t)
     repo = os.path.basename(os.path.dirname(os.path.realpath(top)))
-    familie = os.path.basename(os.path.realpath(XBUDDY_REPO_ROOT))
-    return not (repo.startswith(familie) or repo == "lotse")
+    return not gehoert_dazu(repo)
 
 # PW-31 (xbuddy-prozess#30, 2026-06-09): Sub-Agent Contract Pflicht.
 # Jeder Subagent-Prompt muss einen YAML-Schicht-2-Block tragen mit:
