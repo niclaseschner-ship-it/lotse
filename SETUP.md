@@ -86,8 +86,11 @@ Each template notes what it does and what to adapt (e.g. `runs-on`).
 ## Step 6 — Wire the hooks into your harness
 
 [`settings.fragment.json`](settings.fragment.json) shows how the guard hooks hang
-off `PreToolUse`/`PostToolUse`. Merge that `hooks` block into your
-`~/.claude/settings.json` (which stays machine-local).
+off `PreToolUse`/`PostToolUse`. The Lotse and xbuddy repositories register these
+hooks project-locally in their respective `.claude/settings.json`; they are not
+registered globally in `~/.claude/settings.json`. This also makes the wiring
+available in checked-out worktrees. Adopting projects should likewise merge the
+fragment's `hooks` block into their project-local `.claude/settings.json`.
 
 ## Step 7 — First run
 

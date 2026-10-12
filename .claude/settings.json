@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Task|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/buddy/.claude/hooks/dispatch_status_guard.py",
+            "statusMessage": "Dispatch-Status-Guard (RAT-15)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/buddy/.claude/hooks/status_rollback_guard.py",
+            "statusMessage": "Status-Rollback-Guard (PW-18)"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /home/buddy/.claude/hooks/restart_pending_log.py",
+            "statusMessage": "Restart-Pending-Log (PW-58)"
+          }
+        ]
+      }
+    ]
+  }
+}
